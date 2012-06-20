@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{# 사실 제대로 하려면 allatpay 관련 스크립트도 PaymentForm에 종속적인 것이므로 그쪽의 static resource로 제공해야 함. 일단 귀찮아서 패스. #}
+{% block extra_header %}
+<script type="text/javascript" charset="euc-kr" src="https://tx.allatpay.com/common/AllatPay{% if region == "DOMESTIC" %}RE{% else %}EN{% endif %}.js"></script>
+<script type="text/javascript">
+function ftn_approval(dfm) {
+	var ret = visible_Approval(dfm);
+	var code = ret.substring(0,4);
+	if (code != "0000" && code != "9999") { // Arghhh... we have errors.
+		alert('An error occurred! If it seems a temporary one, please try again later. Otherwise, please report the following error information:\n\n' + ret);
+		return;
+	}
+	if (code == "9999") { // Payment process is cancelled by the user.
+		alert('You have cancelled the payment.');
+		return;
+	}
+
+	alert('Payment is successful! Please check your receipt on a pop-up window. If an empty screen shows up, try refreshing it.')
+	var urls ="http://www.allatpay.com/servlet/AllatBizPop/member/pop_card_receipt.jsp?shop_id={{shop_id}}&order_no={{order_no}}";
+	window.open(urls,"app","width=410,height=650,scrollbars=0");
+}
+</script>
+{% endblock %}
+{% block title %}Payment Form{% endblock %}
+{% block content %}
+<h2>Registration ({% if registration_type == "earlybird" %}Early bird{% else %}Standard, with full rates{% endif %})</h2>
+<noscript>
+<p class="warning">This page requires Javascript to be enabled!</p>
+</noscript>
+<form id="payment-form" action="/registration/step2/" method="POST">
+{% csrf_token %}
+<input type="hidden" name="step" value="2">
+<table class="form" style="width: 95%">
+{{ payment_form.as_table }}
+<tr><th>Amount:</th><td><span id="amount-display"></span></td></tr>
+<tr class="submit-row"><th>&nbsp;</th><td><input type="submit" name="submit_action" value="Confirm to pay" id="payment-form-submit"></td></tr>
+</table>
+</form>
+<script type="text/javascript">
+var region = '{{ region }}';
+$('#payment-form-submit').click(function() {
+	ftn_approval($('#payment-form').get(0));
+	return false;
+});
+$(document).ready(function() {
+	if (region == 'DOMESTIC') {
+		$('#amount-display').text('₩ ' + $('#id_allat_amt').val());
+	} else {
+		var x = parseInt($('#id_allat_amt').val());
+		$('#amount-display').text('$ ' + (x / 100).toFixed(2) + '; The applied exchange rate is 1100 KRW/USD.');
+	}
+});
+</script>
+{% endblock %}

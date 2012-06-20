@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}Result{% endblock %}
+{% block content %}
+{% if success %}
+<p>Your request has been successfully processed!</p>
+{% else %}
+<p>Sorry, we could not finish your request.</p>
+{% endif %}
+{% endblock %}

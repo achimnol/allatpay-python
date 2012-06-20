@@ -1,0 +1,33 @@
+<!doctype HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>{% block title %}{% endblock %}</title>
+	<link rel="stylesheet" href="{{ STATIC_URL }}common.css">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+{% block extra_header %}
+{% endblock %}
+</head>
+<body>
+<div id="wrap">
+	<div id="header">
+		<h1>Website Title</h1>
+		{# include "navigation.html" #}
+	</div>
+	<div id="content">
+	{% if messages %}
+	<ul class="messages">
+		{% for message in messages %}
+		<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+	{% block content %}{% endblock %}
+	</div>
+	<div id="footer">
+	{% block extra_footer %}{% endblock %}
+	</div>
+</div>
+</body>
+</html>
