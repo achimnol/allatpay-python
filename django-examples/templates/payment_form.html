@@ -47,7 +47,7 @@ $(document).ready(function() {
 		$('#amount-display').text('₩ ' + $('#id_allat_amt').val());
 	} else {
 		var x = parseInt($('#id_allat_amt').val());
-		$('#amount-display').text('$ ' + (x / 100).toFixed(2) + '; The applied exchange rate is 1100 KRW/USD.');
+		$('#amount-display').text('$ ' + (x / 100).toFixed(2)); // The unit of USD is cents, not dollars.
 	}
 });
 </script>

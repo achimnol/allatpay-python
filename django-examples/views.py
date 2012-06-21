@@ -132,7 +132,7 @@ def cancel(request):
         if payment_cancel_form.is_valid():
             data = payment_cancel_form.cleaned_data
             # TODO: do payment cancellation
-            # TODO: delete registrant object
+            # TODO: delete Order object
             raise NotImplementedError
             messages.add_message(request, messages.WARNING, u'Not implemented yet.')
         return render_to_response('transaction_result.html', {
